@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -67,8 +68,7 @@ public class PessoaService {
 		return pessoaResponseConverter.convert(pessoaRepository.save(pessoaRequestConverter.convert(request)));
 	}
     
-    @CachePut(cacheNames = "Pessoa", key="#uuid")
-	@CacheEvict(cacheNames = "Pessoas", allEntries = true)
+	@Caching(evict = {@CacheEvict(value = "Pessoas", allEntries = true), @CacheEvict(value = "Pessoa", key = "#uuid")})
 	public void delete(final String uuid) {
 		pessoaRepository.delete(getByUuid(uuid));						
     }
